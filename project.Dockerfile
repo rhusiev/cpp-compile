@@ -1,5 +1,5 @@
 # Use the first image as a base
-FROM cpp-compile
+FROM ghcr.io/rhusiev/cpp-compile:latest
 
 # Set the working directory
 WORKDIR /app/project
