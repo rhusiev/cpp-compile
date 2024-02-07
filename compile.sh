@@ -95,6 +95,20 @@ handle_error() {
     exit 1
 }
 
+add_pvs_headers() {
+    cd ..
+    find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
+    echo "**Adding PVS headers to the files:**" >&2
+    cat files.txt >&2
+    sed -i '/^\.\/cmake/d;/^\.\/build/d;/^\.\/bin/d;/^\.\/lib/d' files.txt
+    while IFS= read -r file; do
+        if [[ $(head -n 1 "$file") != "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
+            sed -i '1s/^/\/\/ This is a personal academic project. Dear PVS-Studio, please check it.\n\/\/ PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http:\/\/www.viva64.com\n/' "$file"
+        fi
+    done < files.txt
+    rm files.txt
+}
+
 if [[ "$pipeline" == true ]]; then
     mkdir -p ./cmake-build-debug
     (
@@ -140,6 +154,7 @@ if [[ "$pipeline" == true ]]; then
 
         # GCC
         echo "====Compiling with GCC + PVS + clang-tidy====" >&2
+        add_pvs_headers
         if [ -f /app/project/cmake/extra/PVS-Studio.cmake ]; then sed -i "s/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/g" /app/project/cmake/extra/PVS-Studio.cmake; fi
         sed -i "s/ENABLE_PVS_STUDIO OFF)/ENABLE_PVS_STUDIO ON)/g" ../CMakeLists.txt
         sed -i 's/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
