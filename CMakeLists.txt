@@ -28,7 +28,7 @@ include(cmake/CompilerWarnings.cmake)
 
 #! Project main executable source compilation
 add_executable(${PROJECT} main.cpp
-        mystring.cpp mystring.hpp)
+        myprogram.cpp myprogram.hpp)
 
 #! Put path to your project headers
 target_include_directories(${PROJECT} PRIVATE include)
