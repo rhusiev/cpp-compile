@@ -90,8 +90,7 @@ handle_error() {
     sed -i "s/clang-asan)/${project_name})/g" ../CMakeLists.txt
     sed -i "s/clang-tsan)/${project_name})/g" ../CMakeLists.txt
     sed -i "s/clang-msan)/${project_name})/g" ../CMakeLists.txt
-    sed -i "s/gcc-analyzers)/${project_name})/g" ../CMakeLists.txt
-    sed -i "s/ENABLE_PVS_STUDIO OFF)/ENABLE_PVS_STUDIO ON)/g" ../CMakeLists.txt
+    sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
     sed -i 's/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
     exit 1
 }
