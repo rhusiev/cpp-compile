@@ -173,11 +173,10 @@ if [[ "$pipeline" == true ]]; then
         CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. || handle_error
         cmake --build . || handle_error
         cmake --install . || handle_error
-        popd
-
         # Remove PVS things
         remove_pvs_headers
         sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
+        popd
 
         if [[ "$valgrind" == true ]]; then
             echo "====Running with Valgrind====" >&2
