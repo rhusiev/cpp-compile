@@ -1,3 +1,4 @@
+#!/bin/bash
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -99,14 +100,19 @@ add_pvs_headers() {
     cd ..
     find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
     echo "**Adding PVS headers to the files:**" >&2
+    # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
+    sed -i '/^\.\/cmake/d' files.txt
+    sed -i '/^\.\/CMake/d' files.txt
+    sed -i '/^cmake/d' files.txt
+    sed -i '/^CMake/d' files.txt
     cat files.txt >&2
-    sed -i '/^\.\/cmake/d;/^\.\/build/d;/^\.\/bin/d;/^\.\/lib/d' files.txt
     while IFS= read -r file; do
         if [[ $(head -n 1 "$file") != "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
             sed -i '1s/^/\/\/ This is a personal academic project. Dear PVS-Studio, please check it.\n\/\/ PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http:\/\/www.viva64.com\n/' "$file"
         fi
     done < files.txt
     rm files.txt
+    cd -
 }
 
 if [[ "$pipeline" == true ]]; then
