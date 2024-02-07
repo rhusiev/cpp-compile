@@ -21,20 +21,13 @@ while [[ $# -gt 0 ]]; do
       exit 1
     fi
     ;;
-  -D | --debug-build)
+  -d | --debug-build)
     debug_build=true
     shift
     ;;
-  -d | --no-debug-build)
-    debug_build=false
-    shift
-    ;;
-  -O | --optimize-build)
+  -o | --optimize-build)
     optimize_build=true
-    shift
-    ;;
-  -o | --no-optimize-build)
-    optimize_build=false
+    debug_build=false
     shift
     ;;
   -R | --remove-build-dirs)
@@ -55,10 +48,8 @@ while [[ $# -gt 0 ]]; do
     echo "Usage: ./compile.sh [options]
   Options:
     -h      --help                  Show help message.
-    -O      --optimize-build        Compile with optimization before executing.
-    -o      --no-optimize-build     Compile without optimization before executing.
-    -D      --debug-build           Compile with debug options.
-    -d      --no-debug-build        Compile without debug options.
+    -o      --optimize-build        Compile with optimization before executing.
+    -d      --debug-build           Compile with debug options.
     -I      --install_prefix        Installation path.
     -R      --remove-build-dirs     Remove build dirs after the install.
     -p      --pipeline              Enable pipeline of different compilers and sanitizers.
