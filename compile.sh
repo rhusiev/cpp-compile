@@ -115,6 +115,25 @@ add_pvs_headers() {
     cd -
 }
 
+remove_pvs_headers() {
+    cd ..
+    find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
+    echo "**Removing PVS headers from the files:**" >&2
+    # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
+    sed -i '/^\.\/cmake/d' files.txt
+    sed -i '/^\.\/CMake/d' files.txt
+    sed -i '/^cmake/d' files.txt
+    sed -i '/^CMake/d' files.txt
+    cat files.txt >&2
+    while IFS= read -r file; do
+        if [[ $(head -n 1 "$file") == "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
+            sed -i '1,2d' "$file"
+        fi
+    done < files.txt
+    rm files.txt
+    cd -
+}
+
 if [[ "$pipeline" == true ]]; then
     mkdir -p ./cmake-build-debug
     (
@@ -168,6 +187,10 @@ if [[ "$pipeline" == true ]]; then
         cmake --build . || handle_error
         cmake --install . || handle_error
         popd
+
+        # Remove PVS things
+        remove_pvs_headers
+        sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
 
         if [[ "$valgrind" == true ]]; then
             echo "====Running with Valgrind====" >&2
