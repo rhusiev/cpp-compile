@@ -116,7 +116,6 @@ add_pvs_headers() {
 }
 
 remove_pvs_headers() {
-    cd ..
     find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
     echo "**Removing PVS headers from the files:**" >&2
     # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
@@ -131,7 +130,6 @@ remove_pvs_headers() {
         fi
     done < files.txt
     rm files.txt
-    cd -
 }
 
 if [[ "$pipeline" == true ]]; then
