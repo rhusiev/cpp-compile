@@ -117,13 +117,12 @@ add_pvs_headers() {
 
 remove_pvs_headers() {
     find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
-    echo "**Removing PVS headers from the files:**" >&2
+    echo "**Removing PVS headers**" >&2
     # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
     sed -i '/^\.\/cmake/d' files.txt
     sed -i '/^\.\/CMake/d' files.txt
     sed -i '/^cmake/d' files.txt
     sed -i '/^CMake/d' files.txt
-    cat files.txt >&2
     while IFS= read -r file; do
         if [[ $(head -n 1 "$file") == "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
             sed -i '1,2d' "$file"
@@ -194,7 +193,7 @@ if [[ "$pipeline" == true ]]; then
             echo "====Running with Valgrind====" >&2
             valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/gcc-analyzers $valgrind_args
         fi
-    )
+)
     exit 0
 fi
 
