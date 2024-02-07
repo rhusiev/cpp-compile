@@ -156,7 +156,7 @@ if [[ "$pipeline" == true ]]; then
         cmake --build . || handle_error
         cmake --install . || handle_error
         sed -i 's/set(ENABLE_MSan ON)/set(ENABLE_MSan OFF)/g' ../CMakeLists.txt
-        sed -i 's/clang-msan)/gcc-analyzers)/g' ../CMakeLists.txt
+        sed -i "s/clang-msan)/${project_name})/g" ../CMakeLists.txt
 
         # GCC
         echo "====Compiling with GCC + PVS + clang-tidy====" >&2
@@ -167,7 +167,6 @@ if [[ "$pipeline" == true ]]; then
         CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. || handle_error
         cmake --build . || handle_error
         cmake --install . || handle_error
-        sed -i "s/gcc-analyzers)/${project_name})/g" ../CMakeLists.txt
         popd
 
         if [[ "$valgrind" == true ]]; then
