@@ -106,19 +106,22 @@ add_pvs_headers() {
 }
 
 remove_pvs_headers() {
+    cd ..
     find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
-    echo "**Removing PVS headers**" >&2
+    echo "**Removing PVS headers from files:**" >&2
     # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
     sed -i '/^\.\/cmake/d' files.txt
     sed -i '/^\.\/CMake/d' files.txt
     sed -i '/^cmake/d' files.txt
     sed -i '/^CMake/d' files.txt
+    cat files.txt | sed 's/^/ /' >&2
     while IFS= read -r file; do
         if [[ $(head -n 1 "$file") == "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
             sed -i '1,2d' "$file"
         fi
     done < files.txt
     rm files.txt
+    cd -
 }
 
 if [[ "$pipeline" == true ]]; then
