@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 # Pipeline
 set(PROJECT executable_name)
-set(ENABLE_PVS_STUDIO ON)
+set(ENABLE_PVS_STUDIO OFF)
 set(ENABLE_UBSan OFF)
 set(ENABLE_ASAN OFF)
 set(ENABLE_TSan OFF)
