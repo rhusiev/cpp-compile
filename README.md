@@ -31,3 +31,11 @@ docker run --rm -v .:/app/project:z PROJECT --v="<valgrind options>"
 ```
 
 It will run with valgrind after the run and pass the options to valgrind
+
+# Headers for lsp
+
+To make lsp (such as clangd) know about headers included in cmake, you can run the following command:
+
+```sh
+sed -i "s/\/app\/project/$(echo ${PWD} | sed 's/\//\\\//g')/g" cmake-build-debug/compile_commands.json && cp cmake-build-debug/compile_commands.json .
+```
