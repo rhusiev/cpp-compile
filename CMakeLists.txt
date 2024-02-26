@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.15)
+
 # Pipeline
 set(PROJECT executable_name)
 set(ENABLE_PVS_STUDIO ON)
@@ -8,14 +10,9 @@ set(ENABLE_MSAN OFF)
 ##set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 
 
-cmake_minimum_required(VERSION 3.15)
-
 #! Check every comment after the "#!"
 
-#! CHANGE YOUR PROJECT NAME
-#  It is used as your project's main executable name.
 project(${PROJECT} C CXX) # project(${PROJECT} C CXX ASM)
-
 set(CMAKE_CXX_STANDARD 20)
 
 set(WARNINGS_AS_ERRORS OFF)
@@ -25,6 +22,9 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 include(cmake/CompilerWarnings.cmake)
+
+#! Export compile_commands.json for lsps
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #! Project main executable source compilation
 add_executable(${PROJECT} main.cpp
