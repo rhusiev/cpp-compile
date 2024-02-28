@@ -116,7 +116,8 @@ remove_pvs_headers() {
     sed -i '/^\.\/CMake/d' files.txt
     sed -i '/^cmake/d' files.txt
     sed -i '/^CMake/d' files.txt
-    cat files.txt | sed 's/^/ /' >&2
+    # cat files.txt | sed 's/^/ /' >&2
+    cat files.txt >&2
     while IFS= read -r file; do
         if [[ $(head -n 1 "$file") == "// This is a personal academic project. Dear PVS-Studio, please check it." ]]; then
             sed -i '1,2d' "$file"
