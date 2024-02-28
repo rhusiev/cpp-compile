@@ -128,8 +128,8 @@ if [[ "$pipeline" == true ]]; then
     mkdir -p ./cmake-build-debug
     (
         pushd ./cmake-build-debug > /dev/null || exit 1
-        # Find the project_name in `set(PROJECT_NAME project_name)`
-        project_name=$(grep -oP '(?<=set\(PROJECT_NAME ).*(?=\))' ../CMakeLists.txt)
+        # Find the project_name in `set(PROJECT project_name)`
+        project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ../CMakeLists.txt)
         # CLANG
         sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
         sed -i 's/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
