@@ -183,7 +183,7 @@ if [[ "$pipeline" == true ]]; then
 
         if [[ "$valgrind" == true ]]; then
             echo "====Running with Valgrind====" >&2
-            valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/gcc-analyzers $valgrind_args
+            valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $valgrind_args
         fi
 )
     exit 0
