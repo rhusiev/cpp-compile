@@ -22,15 +22,15 @@ If you want to run with a pipeline (using different sanitizers, linters etc), ru
 docker run --rm -v .:/app/project:z PROJECT -p
 ```
 
-## Valgrind
+## Valgrind and sanitizers
 
-If you want to also run with valgrind, run the following command:
+If you want to also run with valgrind and sanitizers, run the following command:
 
 ```sh
-docker run --rm -v .:/app/project:z PROJECT --v="<valgrind options>"
+docker run --rm -v .:/app/project:z PROJECT --s="<options>"
 ```
 
-It will run with valgrind after the run and pass the options to valgrind
+It will run with valgrind and sanitizers after the run and pass the options to your program.
 
 # Headers for lsp
 
