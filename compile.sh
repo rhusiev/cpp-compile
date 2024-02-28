@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
     -I      --install_prefix        Installation path.
     -R      --remove-build-dirs     Remove build dirs after the install.
     -p      --pipeline              Enable pipeline of different compilers and sanitizers.
-    --v='<args>'                    Arguments for valgrind. If not set, valgrind will not be executed."
+    --v='<args>'                    Arguments for program when run under valgrind. If '--v' not present, valgrind will not be executed."
     exit 0
     ;;
   \?)
@@ -83,6 +83,9 @@ handle_error() {
     sed -i "s/clang-msan)/${project_name})/g" ../CMakeLists.txt
     sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
     sed -i 's/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
+    cd ..
+    remove_pvs_headers
+    cd -
     exit 1
 }
 
@@ -106,7 +109,6 @@ add_pvs_headers() {
 }
 
 remove_pvs_headers() {
-    cd ..
     find . -type f -name "*.cpp" -o -name "*.c" -o -name "*.hpp" -o -name "*.h" | grep -P '.*\/[^.]*\.(cpp|c|hpp|h)$' > files.txt
     echo "**Removing PVS headers from files:**" >&2
     # Remove files whose names start with "cmake", "CMake" or "./cmake" or "./CMake"
@@ -121,7 +123,6 @@ remove_pvs_headers() {
         fi
     done < files.txt
     rm files.txt
-    cd -
 }
 
 if [[ "$pipeline" == true ]]; then
@@ -176,8 +177,6 @@ if [[ "$pipeline" == true ]]; then
         CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. || handle_error
         cmake --build . || handle_error
         cmake --install . || handle_error
-        # Remove PVS things
-        remove_pvs_headers
         sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
         popd
 
@@ -185,7 +184,9 @@ if [[ "$pipeline" == true ]]; then
             echo "====Running with Valgrind====" >&2
             valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $valgrind_args
         fi
-)
+    )
+    # Remove PVS things
+    remove_pvs_headers
     exit 0
 fi
 
