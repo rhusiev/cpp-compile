@@ -1,11 +1,11 @@
 if [ $# -eq 0 ]; then
     echo "===Running normallly==="
-    /bin/bash ../compile.sh 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*" | awk '!x[$0]++'
+    /bin/bash ../compile.sh 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"# | awk '!x[$0]++'
 
 elif [ $# -eq 1 ]; then
     if [[ $1 == --s=* ]]; then
         echo "===Running with Pipeline and Valgrind==="
-        ../compile.sh --s="${1:4}" 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*" | awk '!x[$0]++'
+        ../compile.sh --s="${1:4}" 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"# | awk '!x[$0]++'
     elif [[ $1 == --r=* ]]; then
         echo "===Running custom command==="
         eval ${1:4}
@@ -13,10 +13,10 @@ elif [ $# -eq 1 ]; then
         rm -rf cmake-build-* compile.log
     elif [ $1 = "-p" ]; then
         echo "===Running with Pipeline==="
-        ../compile.sh -p 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*" | awk '!x[$0]++'
+        ../compile.sh -p 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"# | awk '!x[$0]++'
     elif [ $1 = "-o" ]; then
         echo "===Running with Optimization==="
-        ../compile.sh -o 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*" | awk '!x[$0]++'
+        ../compile.sh -o 2>&1 >/dev/null | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"# | awk '!x[$0]++'
     elif [ $1 = "-h" ]; then
         echo "Usage: pipeline-compile.sh [OPTION]"
         echo "Run compile.sh with -p option"
