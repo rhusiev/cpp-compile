@@ -183,10 +183,15 @@ if [[ "$pipeline" == true ]]; then
         if [[ "$sanitizers" == true ]]; then
             echo "====Running with Valgrind and Sanitizers====" >&2
             echo "Sanitizers args: $sanitizers_args" >&2
+            echo "====Valgrind====" >&2
             valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args >&2 || handle_error
+            echo "====UBSan====" >&2
             ./bin/clang-ubsan $sanitizers_args >&2 || handle_error
+            echo "====ASan====" >&2
             ./bin/clang-asan $sanitizers_args >&2 || handle_error
+            echo "====TSan====" >&2
             ./bin/clang-tsan $sanitizers_args >&2 || handle_error
+            echo "====MSan====" >&2
             ./bin/clang-msan $sanitizers_args >&2 || handle_error
         fi
     )
