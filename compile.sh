@@ -8,7 +8,7 @@ optimize_build=false
 remove_dirs=false
 install_prefix=".."
 pipeline=false
-valgrind=false
+sanitizers=false
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -38,10 +38,10 @@ while [[ $# -gt 0 ]]; do
     pipeline=true
     shift
     ;;
-  --v=*)
-    valgrind=true
+  --s=*)
+    sanitizers=true
     pipeline=true
-    valgrind_args="${1#*=}"
+    sanitizers_args="${1#*=}"
     shift
     ;;
   -h | --help)
@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
     -I      --install_prefix        Installation path.
     -R      --remove-build-dirs     Remove build dirs after the install.
     -p      --pipeline              Enable pipeline of different compilers and sanitizers.
-    --v='<args>'                    Arguments for program when run under valgrind. If '--v' not present, valgrind will not be executed."
+    --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed."
     exit 0
     ;;
   \?)
@@ -180,10 +180,14 @@ if [[ "$pipeline" == true ]]; then
         sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
         popd
 
-        if [[ "$valgrind" == true ]]; then
-            echo "====Running with Valgrind====" >&2
-            echo "Valgrind args: $valgrind_args" >&2
-            valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $valgrind_args >&2 || handle_error
+        if [[ "$sanitizers" == true ]]; then
+            echo "====Running with Valgrind and Sanitizers====" >&2
+            echo "Sanitizers args: $sanitizers_args" >&2
+            valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args >&2 || handle_error
+            ./bin/clang-ubsan $sanitizers_args >&2 || handle_error
+            ./bin/clang-asan $sanitizers_args >&2 || handle_error
+            ./bin/clang-tsan $sanitizers_args >&2 || handle_error
+            ./bin/clang-msan $sanitizers_args >&2 || handle_error
         fi
     )
     # Remove PVS things
