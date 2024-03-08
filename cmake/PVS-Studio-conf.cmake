@@ -6,6 +6,7 @@ if (ENABLE_PVS_STUDIO)
         pvs_studio_add_target(TARGET ${TARGET}.analyze ALL
                 OUTPUT FORMAT errorfile
                 ANALYZE ${TARGET}
+                MODE GA:1,2,3
                 LOG target.err)
     endforeach()
 
