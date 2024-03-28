@@ -21,7 +21,7 @@ elif [ $# -eq 1 ]; then
         echo "Usage: pipeline-compile.sh [OPTION]"
         echo "Run compile.sh with -p option"
         echo "If no argument - run compile.sh"
-        echo "If --s='<value>' - run compile.sh with --s='<value>' argument - run Valgrind and sanitizers afterwards with <value> as arguments for the program run"
+        echo "If --s='<value>' - run compile.sh with --s='<value>' argument - run Valgrind and sanitizers with <value> as arguments for the program run"
         echo "If -p argument - run compile.sh with -p argument - do pipeline of different compilers and sanitizers"
         echo "If -o argument - run compile.sh with -o argument - do compilation with optimization"
         echo "If --r='<value>' argument - run the value as a bash command instead of compilation"
