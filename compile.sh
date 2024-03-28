@@ -188,6 +188,7 @@ fi
 if [[ "$sanitizers" == true ]]; then
     echo "====Running with Valgrind and Sanitizers====" >&2
     echo "Sanitizers args: $sanitizers_args" >&2
+    project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ./CMakeLists.txt)
     echo "====Valgrind====" >&2
     valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args >&2 || handle_error
     echo "====Valgrind Helgrind====" >&2
