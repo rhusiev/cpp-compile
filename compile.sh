@@ -40,7 +40,6 @@ while [[ $# -gt 0 ]]; do
     ;;
   --s=*)
     sanitizers=true
-    pipeline=true
     sanitizers_args="${1#*=}"
     shift
     ;;
@@ -180,29 +179,29 @@ if [[ "$pipeline" == true ]]; then
         cmake --install . || handle_error
         sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
         popd
-
-        if [[ "$sanitizers" == true ]]; then
-            echo "====Running with Valgrind and Sanitizers====" >&2
-            echo "Sanitizers args: $sanitizers_args" >&2
-            echo "====Valgrind====" >&2
-            valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args >&2 || handle_error
-            echo "====Valgrind Helgrind====" >&2
-            valgrind --tool=helgrind ./bin/$project_name $sanitizers_args >&2 || handle_error
-            echo "====Valgrind DRD====" >&2
-            valgrind --tool=drd ./bin/$project_name $sanitizers_args >&2 || handle_error
-            echo "====UBSan====" >&2
-            ./bin/clang-ubsan $sanitizers_args >&2 || handle_error
-            echo "====ASan====" >&2
-            ./bin/clang-asan $sanitizers_args >&2 || handle_error
-            echo "====TSan====" >&2
-            ./bin/clang-tsan $sanitizers_args >&2 || handle_error
-            echo "====MSan====" >&2
-            ./bin/clang-msan $sanitizers_args >&2 || handle_error
-        fi
     )
     # Remove PVS things
     remove_pvs_headers
     exit 0
+fi
+
+if [[ "$sanitizers" == true ]]; then
+    echo "====Running with Valgrind and Sanitizers====" >&2
+    echo "Sanitizers args: $sanitizers_args" >&2
+    echo "====Valgrind====" >&2
+    valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args >&2 || handle_error
+    echo "====Valgrind Helgrind====" >&2
+    valgrind --tool=helgrind ./bin/$project_name $sanitizers_args >&2 || handle_error
+    echo "====Valgrind DRD====" >&2
+    valgrind --tool=drd ./bin/$project_name $sanitizers_args >&2 || handle_error
+    echo "====UBSan====" >&2
+    ./bin/clang-ubsan $sanitizers_args >&2 || handle_error
+    echo "====ASan====" >&2
+    ./bin/clang-asan $sanitizers_args >&2 || handle_error
+    echo "====TSan====" >&2
+    ./bin/clang-tsan $sanitizers_args >&2 || handle_error
+    echo "====MSan====" >&2
+    ./bin/clang-msan $sanitizers_args >&2 || handle_error
 fi
 
 if [[ "$debug_build" == true ]]; then
