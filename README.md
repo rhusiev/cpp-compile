@@ -11,7 +11,23 @@ You can also place `compile.sh` in the project, if you want a modified version
 
 ```sh
 docker build -t PROJECT -f ./project.Dockerfile
-docker run --rm -ti -v .:/app/project:z PROJECT
+docker run --rm -ti -v .:/app/project:z PROJECT -h
+```
+
+## Debug
+
+To run with debug build:
+
+```sh
+docker run --rm -ti -v .:/app/project:z PROJECT -d
+```
+
+## Release/optimized
+
+To run with release (optimized) build:
+
+```sh
+docker run --rm -ti -v .:/app/project:z PROJECT -o
 ```
 
 ## Pipeline
