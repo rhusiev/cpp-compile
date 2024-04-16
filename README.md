@@ -11,7 +11,7 @@ You can also place `compile.sh` in the project, if you want a modified version
 
 ```sh
 docker build -t PROJECT -f ./project.Dockerfile
-docker run --rm -v .:/app/project:z PROJECT
+docker run --rm -ti -v .:/app/project:z PROJECT
 ```
 
 ## Pipeline
@@ -19,7 +19,7 @@ docker run --rm -v .:/app/project:z PROJECT
 If you want to run with a pipeline (using different sanitizers, linters etc), run the following command:
 
 ```sh
-docker run --rm -v .:/app/project:z PROJECT -p
+docker run --rm -ti -v .:/app/project:z PROJECT -p
 ```
 
 ## Valgrind and sanitizers
@@ -27,7 +27,7 @@ docker run --rm -v .:/app/project:z PROJECT -p
 If you want to also run with valgrind and sanitizers, run the following command:
 
 ```sh
-docker run --rm -v .:/app/project:z PROJECT --s="<options>"
+docker run --rm -ti -v .:/app/project:z PROJECT --s="<options>"
 ```
 
 It will run with valgrind and sanitizers after the run and pass the options to your program.

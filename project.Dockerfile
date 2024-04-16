@@ -10,4 +10,4 @@ VOLUME /app/project
 COPY CMakeLists.txt compile.s[h] /app/
 
 # Run the ./compile.sh script
-ENTRYPOINT ["/bin/bash", "../pipeline-compile.sh"]
+ENTRYPOINT ["../compile.sh"]
