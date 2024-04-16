@@ -10,6 +10,8 @@ handle_output() {
 	cat /dev/stdin <(cat - | >&2 | 2>&1 | tee compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*")
 }
 
+echo "===Starting===" | handle_output
+
 handle_error() {
 	echo "Something went wrong, restoring the original CMakeLists.txt"
 	sed -i 's/set(ENABLE_UBSan ON)/set(ENABLE_UBSan OFF)/g' ../CMakeLists.txt
@@ -128,7 +130,7 @@ pipeline() {
 
 sanitizers() {
     sanitizers_args=$1
-	echo "====Running with Valgrind and Sanitizers====" | handle_output
+	echo "===Running with Valgrind and Sanitizers===" | handle_output
 	echo "Sanitizers args: $sanitizers_args" | handle_output
 	project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ./CMakeLists.txt)
 	echo "====Valgrind====" | handle_output
@@ -148,7 +150,7 @@ sanitizers() {
 }
 
 debug() {
-    echo "====Running with Debug Build====" | handle_output
+    echo "===Running with Debug Build===" | handle_output
 	mkdir -p ./cmake-build-debug
 	(
 		pushd ./cmake-build-debug >/dev/null || exit 1
@@ -161,7 +163,7 @@ debug() {
 }
 
 optimize() {
-    echo "====Running with Optimize Build====" | handle_output
+    echo "===Running with Optimize Build===" | handle_output
 	mkdir -p ./cmake-build-release
 	(
 		pushd ./cmake-build-release >/dev/null || exit 1
@@ -174,14 +176,14 @@ optimize() {
 }
 
 clean() {
-    echo "====Cleaning====" | handle_output
+    echo "===Cleaning===" | handle_output
     rm -rf cmake-build-* compile.log
 }
 
 run() {
-    echo "====Running custom command====" | handle_output
+    echo "===Running custom command===" | handle_output
     run_args=$1
-    echo "Running command: $run_args" | handle_output
+    echo "Running command: '$run_args'" | handle_output
     eval $run_args | handle_output
 }
 
