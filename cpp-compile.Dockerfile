@@ -14,5 +14,4 @@ RUN wget -q -O /etc/yum.repos.d/viva64.repo \
 
 RUN pvs-studio-analyzer credentials PVS-Studio Free FREE-FREE-FREE-FREE
 
-COPY pipeline-compile.sh /app/pipeline-compile.sh
 COPY compile.sh /app/compile.sh
