@@ -177,6 +177,18 @@ optimize() {
 	)
 }
 
+relwithdebinfo() {
+    echo "===Running with Release Debug Info===" 2>&1 | handle_output
+    mkdir -p ./cmake-build-relwithdebinfo
+    (
+        pushd ./cmake-build-relwithdebinfo >/dev/null || exit 1
+        cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || exit 1
+		cmake --build . 2>&1 | handle_output || exit 1
+		cmake --install . 2>&1 | handle_output || exit 1
+		popd
+    )
+}
+
 clean() {
     echo "===Cleaning===" 2>&1 | handle_output
     rm -rf cmake-build-* compile.log
@@ -208,6 +220,10 @@ while [[ $# -gt 0 ]]; do
         optimize
 		shift
 		;;
+    -i / --relwithdebinfo-build)
+        relwithdebinfo
+        shift
+        ;;
 	-p | --pipeline)
         pipeline
 		shift
@@ -232,6 +248,7 @@ while [[ $# -gt 0 ]]; do
     -h      --help                  Show help message
     -o      --optimize-build        Compile with optimization before executing
     -d      --debug-build           Compile with debug options
+    -i      --relwithdebinfo-build  Compile with release debug info
     -I      --install_prefix        Installation path
     -p      --pipeline              Enable pipeline of different compilers and sanitizers
     -c      --clean                 Clean cmake-build-* directories and compile.log
