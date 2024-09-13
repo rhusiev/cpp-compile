@@ -220,10 +220,10 @@ while [[ $# -gt 0 ]]; do
         optimize
 		shift
 		;;
-    -i / --relwithdebinfo-build)
+    -i | --relwithdebinfo-build)
         relwithdebinfo
-        shift
-        ;;
+		shift
+		;;
 	-p | --pipeline)
         pipeline
 		shift
