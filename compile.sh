@@ -1,4 +1,12 @@
 #!/bin/bash
+# The Tea-Ware License (Version 2.0)
+# Copyright (c) 2024 Radomyr Husiev <h.radomyr@proton.me>
+#
+# This script is part of a project licensed under the Tea-Ware License.
+# Feel free to use, modify, and distribute this script, keeping this notice intact.
+# If we meet and you find this useful, a cup of tea would be appreciated!
+# 
+# Full license: https://github.com/rhusiev/Tea-Ware-License-v2
 
 set -o errexit
 set -o nounset
