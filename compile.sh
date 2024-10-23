@@ -13,6 +13,22 @@ set -o nounset
 set -o pipefail
 
 install_prefix=".."
+help_message="Usage: ./compile.sh [options]
+  Options:
+    -h      --help                  Show help message
+    -o      --optimize-build        Compile with optimization before executing
+    -d      --debug-build           Compile with debug options
+    -i      --relwithdebinfo-build  Compile with release debug info
+    -I      --install_prefix        Installation path
+    -p      --pipeline              Enable pipeline of different compilers and sanitizers
+    -c      --clean                 Clean cmake-build-* directories and compile.log
+    --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed
+    --r='<value>'                   Run the value as a bash command"
+
+if [ $# -eq 0 ]; then
+    echo "$help_message"
+    exit 0
+fi
 
 call_location=$(pwd)
 echo "" > $call_location/compile.log
@@ -251,17 +267,7 @@ while [[ $# -gt 0 ]]; do
 		shift
 		;;
 	-h | --help)
-		echo "Usage: ./compile.sh [options]
-  Options:
-    -h      --help                  Show help message
-    -o      --optimize-build        Compile with optimization before executing
-    -d      --debug-build           Compile with debug options
-    -i      --relwithdebinfo-build  Compile with release debug info
-    -I      --install_prefix        Installation path
-    -p      --pipeline              Enable pipeline of different compilers and sanitizers
-    -c      --clean                 Clean cmake-build-* directories and compile.log
-    --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed
-    --r='<value>'                   Run the value as a bash command"
+		echo "$help_message"
 		exit 0
 		;;
 	\?)
