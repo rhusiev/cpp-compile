@@ -97,9 +97,9 @@ remove_pvs_headers() {
 
 pipeline() {
 	echo "===Running with Pipeline===" 2>&1 | handle_output
-	mkdir -p ./cmake-build-debug
+	mkdir -p ./cmake-build-pipeline
 	(
-		pushd ./cmake-build-debug >/dev/null || exit 1
+		pushd ./cmake-build-pipeline >/dev/null || exit 1
 		# Find the project_name in `set(PROJECT project_name)`
 		project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ../CMakeLists.txt)
 		# CLANG
@@ -109,6 +109,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_UBSan OFF)/set(ENABLE_UBSan ON)/g' ../CMakeLists.txt
 		sed -i "s/${project_name})/clang-ubsan)/g" ../CMakeLists.txt
 		echo "====Compiling with Clang UBSan====" 2>&1 | handle_output
+        clean()
 		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
@@ -117,6 +118,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_UBSan ON)/set(ENABLE_UBSan OFF)/g' ../CMakeLists.txt
 		sed -i 's/set(ENABLE_ASAN OFF)/set(ENABLE_ASAN ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-ubsan)/clang-asan)/g' ../CMakeLists.txt
+        clean()
 		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
@@ -125,6 +127,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_ASAN ON)/set(ENABLE_ASAN OFF)/g' ../CMakeLists.txt
 		sed -i 's/set(ENABLE_TSan OFF)/set(ENABLE_TSan ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-asan)/clang-tsan)/g' ../CMakeLists.txt
+        clean()
 		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
@@ -133,6 +136,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_TSan ON)/set(ENABLE_TSan OFF)/g' ../CMakeLists.txt
 		sed -i 's/set(ENABLE_MSan OFF)/set(ENABLE_MSan ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-tsan)/clang-msan)/g' ../CMakeLists.txt
+        clean()
 		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
@@ -145,6 +149,7 @@ pipeline() {
 		if [ -f /app/project/cmake/extra/PVS-Studio.cmake ]; then sed -i "s/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/g" /app/project/cmake/extra/PVS-Studio.cmake; fi
 		sed -i "s/ENABLE_PVS_STUDIO OFF)/ENABLE_PVS_STUDIO ON)/g" ../CMakeLists.txt
 		sed -i 's/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
+        clean()
 		CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
