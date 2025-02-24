@@ -13,6 +13,7 @@ set -o nounset
 set -o pipefail
 
 install_prefix=".."
+log=1
 help_message="Usage: ./compile.sh [options]
   Options:
     -h      --help                  Show help message
@@ -22,6 +23,7 @@ help_message="Usage: ./compile.sh [options]
     -I      --install_prefix        Installation path
     -p      --pipeline              Enable pipeline of different compilers and sanitizers
     -c      --clean                 Clean cmake-build-* directories and compile.log
+    -n      --nolog                 Don't log to compile.log
     --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed
     --r='<value>'                   Run the value as a bash command"
 
@@ -30,13 +32,39 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
+for arg in "$@"; do
+    case $arg in
+        -n|--nolog)
+            log=0
+            ;;
+        -I | --install_prefix)
+            if [ "$2" -eq "$2" ] 2>/dev/null; then
+                install_prefix=$2
+                shift 2
+            else
+                echo "Option --install_prefix requires a numerical argument." 2>&1
+                exit 1
+            fi
+            ;;
+    esac
+done
+
+
 call_location=$(pwd)
-echo "" > $call_location/compile.log
-handle_output() {
-    while IFS= read -r line; do
-        echo "$line" | tee -a $call_location/compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"
-    done
-}
+if [ $log -eq 1 ]; then
+    echo "" > "$call_location/compile.log"
+    handle_output() {
+        while IFS= read -r line; do
+            echo "$line" | tee -a $call_location/compile.log | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"
+        done
+    }
+else
+    handle_output() {
+        while IFS= read -r line; do
+            echo "$line" | grep --invert-match ".*\(Consider enabling PVS-Studio\|Sanitizers enabled\|[Ee]nabled in CMakeLists.txt\).*"
+        done
+    }
+fi
 
 echo "===Starting===" 2>&1 | handle_output
 
@@ -231,60 +259,47 @@ run() {
 }
 
 while [[ $# -gt 0 ]]; do
-	case $1 in
-	-I | --install_prefix)
-		if [ "$2" -eq "$2" ] 2>/dev/null; then
-			install_prefix=$2
-			shift 2
-		else
-			echo "Option --install_prefix requires an numerical argument." 2>&1 | handle_output
-			exit 1
-		fi
-		;;
-	-d | --debug-build)
-        debug
-		shift
-		;;
-	-o | --optimize-build)
-        optimize
-		shift
-		;;
-    -i | --relwithdebinfo-build)
-        relwithdebinfo
-		shift
-		;;
-	-p | --pipeline)
-        pipeline
-		shift
-		;;
-	-c | --clean)
-        clean
-		shift
-		;;
-	--s=*)
-		sanitizers_args="${1#*=}"
-        sanitizers $sanitizers_args
-		shift
-		;;
-	--r=*)
-		run_args="${1#*=}"
-        run "$run_args"
-		shift
-		;;
-	-h | --help)
-		echo "$help_message"
-		exit 0
-		;;
-	\?)
-		echo "Invalid option: -$OPTARG" 2>&1 | handle_output
-		exit 1
-		;;
-	:)
-		echo "Option -$OPTARG requires an numerical argument." 2>&1 | handle_output
-		exit 1
-		;;
-	*)
-		break
-		;;
-	esac
+    case $1 in
+        -n | --nolog | -I | --install_prefix)
+            shift
+            ;;
+        -d | --debug-build)
+            debug
+            shift
+            ;;
+        -o | --optimize-build)
+            optimize
+            shift
+            ;;
+        -i | --relwithdebinfo-build)
+            relwithdebinfo
+            shift
+            ;;
+        -p | --pipeline)
+            pipeline
+            shift
+            ;;
+        -c | --clean)
+            clean
+            shift
+            ;;
+        --s=*)
+            sanitizers_args="${1#*=}"
+            sanitizers "$sanitizers_args"
+            shift
+            ;;
+        --r=*)
+            run_args="${1#*=}"
+            run "$run_args"
+            shift
+            ;;
+        -h | --help)
+            echo "$help_message"
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            break
+            ;;
+    esac
 done
