@@ -27,8 +27,10 @@ include(cmake/CompilerWarnings.cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #! Project main executable source compilation
-add_executable(${PROJECT} main.cpp
-        myprogram.cpp myprogram.hpp)
+file(GLOB SOURCES
+     "src/*.cpp"
+)
+add_executable(${PROJECT} ${SOURCES})
 
 #! Put path to your project headers
 target_include_directories(${PROJECT} PRIVATE include)
