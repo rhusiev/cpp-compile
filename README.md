@@ -67,7 +67,7 @@ It will run with valgrind and sanitizers on your program after the run and pass 
 
 # Docker image
 
-The docker image is fedora based, which means you will need to use `dnf` as a package manager in `project.Dockerfile`, if you want to change installed programs.
+The docker image is Fedora based, which means you will need to use `dnf` as a package manager in `project.Dockerfile`, if you want to change installed programs.
 
 However, the image comes preinstalled with:
 - CMake, Make, Ninja
@@ -81,7 +81,7 @@ However, the image comes preinstalled with:
 
 # Headers for lsp
 
-To make lsp (such as clangd) know about headers included in cmake, you can run the following command after runnign with `-d`:
+To make lsp (such as clangd) know about headers included in cmake, you can run the following command after running with `-d`:
 
 ```sh
 sed -i "s/\/app\/project/$(echo ${PWD} | sed 's/\//\\\//g')/g" cmake-build-debug/compile_commands.json && cp cmake-build-debug/compile_commands.json .
