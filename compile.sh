@@ -21,11 +21,10 @@ help_message="Usage: ./compile.sh [options]
     -d      --debug-build           Compile with debug options
     -i      --relwithdebinfo-build  Compile with release debug info
     -I      --install_prefix        Installation path
-    -p      --pipeline              Enable pipeline of different compilers and sanitizers
+    -p      --pipeline              Enable pipeline build using different compilers and sanitizers and analyzers
     -c      --clean                 Clean cmake-build-* directories and compile.log
     -n      --nolog                 Don't log to compile.log
-    --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed
-    --r='<value>'                   Run the value as a bash command"
+    --s='<args>'                    Arguments for program when run under valgrind and sanitizers. If '--s' not present, valgrind and sanitizers will not be executed"
 
 if [ $# -eq 0 ]; then
     echo "$help_message"
@@ -128,8 +127,8 @@ pipeline() {
 	mkdir -p ./cmake-build-pipeline
 	(
 		pushd ./cmake-build-pipeline >/dev/null || exit 1
-		# Find the project_name in `set(PROJECT project_name)`
-		project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ../CMakeLists.txt)
+		# Find the project_name in `set(PROJECT_NAME project_name)`
+		project_name=$(grep -oP '(?<=set\(PROJECT_NAME ).*(?=\))' ../CMakeLists.txt)
 		# CLANG
 		sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
 		sed -i 's/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
@@ -193,7 +192,7 @@ sanitizers() {
     sanitizers_args=$1
 	echo "===Running with Valgrind and Sanitizers===" 2>&1 | handle_output
 	echo "Sanitizers args: $sanitizers_args" 2>&1 | handle_output
-	project_name=$(grep -oP '(?<=set\(PROJECT ).*(?=\))' ./CMakeLists.txt)
+	project_name=$(grep -oP '(?<=set\(PROJECT_NAME ).*(?=\))' ./CMakeLists.txt)
 	echo "====Valgrind====" 2>&1 | handle_output
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/$project_name $sanitizers_args 2>&1 | handle_output || handle_error
 	echo "====Valgrind Helgrind====" 2>&1 | handle_output
@@ -288,14 +287,17 @@ while [[ $# -gt 0 ]]; do
             sanitizers "$sanitizers_args"
             shift
             ;;
-        --r=*)
-            run_args="${1#*=}"
-            run "$run_args"
-            shift
-            ;;
         -h | --help)
             echo "$help_message"
             exit 0
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" 2>&1 | handle_output
+            exit 1
+            ;;
+        :)
+            echo "Option -$OPTARG requires an numerical argument." 2>&1 | handle_output
+            exit 1
             ;;
         *)
             echo "Unknown argument: $1"
