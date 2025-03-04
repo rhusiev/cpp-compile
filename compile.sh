@@ -137,7 +137,7 @@ pipeline() {
 		sed -i "s/${project_name})/clang-ubsan)/g" ../CMakeLists.txt
 		echo "====Compiling with Clang UBSan====" 2>&1 | handle_output
         rm -rf ../cmake-build-pipeline/* # instead of just rm -rf * - in case something fails, it won't delete everything
-		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
+		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
 
@@ -146,7 +146,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_ASAN OFF)/set(ENABLE_ASAN ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-ubsan)/clang-asan)/g' ../CMakeLists.txt
         rm -rf ../cmake-build-pipeline/*
-		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
+		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
 
@@ -155,7 +155,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_TSan OFF)/set(ENABLE_TSan ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-asan)/clang-tsan)/g' ../CMakeLists.txt
         rm -rf ../cmake-build-pipeline/*
-		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
+		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
 
@@ -164,7 +164,7 @@ pipeline() {
 		sed -i 's/set(ENABLE_MSan OFF)/set(ENABLE_MSan ON)/g' ../CMakeLists.txt
 		sed -i 's/clang-tsan)/clang-msan)/g' ../CMakeLists.txt
         rm -rf ../cmake-build-pipeline/*
-		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
+		CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
 		sed -i 's/set(ENABLE_MSan ON)/set(ENABLE_MSan OFF)/g' ../CMakeLists.txt
@@ -177,7 +177,7 @@ pipeline() {
 		sed -i "s/ENABLE_PVS_STUDIO OFF)/ENABLE_PVS_STUDIO ON)/g" ../CMakeLists.txt
 		sed -i 's/#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=\*")/g' ../CMakeLists.txt
         rm -rf ../cmake-build-pipeline/*
-		CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
+		CC=gcc CXX=g++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="${install_prefix}" .. 2>&1 | handle_output || handle_error
 		cmake --build . 2>&1 | handle_output || handle_error
 		cmake --install . 2>&1 | handle_output || handle_error
 		sed -i "s/ENABLE_PVS_STUDIO ON)/ENABLE_PVS_STUDIO OFF)/g" ../CMakeLists.txt
