@@ -5,8 +5,8 @@ FROM stabletec/build-core:fedora
 RUN dnf update -y -q 
 
 RUN wget -q -O /etc/yum.repos.d/viva64.repo \
- https://files.pvs-studio.com/etc/viva64.repo \
- && dnf install -y -q pvs-studio strace \
+ https://files.pvs-studio.com/etc/viva64.repo
+RUN dnf install -y -q pvs-studio strace \
  && pvs-studio --version
 
 RUN dnf install -y -q wget boost-devel valgrind \
